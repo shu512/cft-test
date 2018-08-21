@@ -3,6 +3,7 @@
 
 void MergeSortString(char *out_filename, char **in_filename, int numb_in_file, int increase_mode)
 {
+	int len_in_array = 0;
 	int flag_exit = 0;
 	char mb_eof; /* "may be eof"? */
 	int mb_int = 1; /* may be int? */
@@ -13,14 +14,28 @@ void MergeSortString(char *out_filename, char **in_filename, int numb_in_file, i
 	char out_array[MAX_LEN_OUTPUT_ARRAY_STRING][MAX_LEN_STRING];
 	int index_out_array = 0;
 	ofstream out(out_filename);
+	if (!out.is_open()) {
+		cout << "Error: output file can`t open/create. \n";
+		return;
+	}
 	ifstream *in = new ifstream[numb_in_file];
-	for (int i = 0; i < numb_in_file; i++)
+	for (int i = 0; i < numb_in_file; i++) {
 		in[i].open(in_filename[i]);
-	for (int i = 0; i < numb_in_file; i++)
-		in[i] >> in_array[i];
+		if (!in[i].is_open()) {
+			cout << "Error: " << in_filename[i] << " :can`t open file.\n";
+			in_array[i] = NULL;
+		}
+	}
+	for (int i = 0; i < numb_in_file; i++) {
+		if (in_array[i] != NULL)
+			in[i] >> in_array[i];
+	}
 	for (int i = 0; i < numb_in_file; i++) {
 		mb_int = 1;
-		for (int j = 0; j < strlen(in_array[i]); j++)
+		if (in_array[i] == NULL)
+			continue;
+		len_in_array = strlen(in_array[i]);
+		for (int j = 0; j < len_in_array; j++)
 			if ((in_array[i][j] < '0') || (in_array[i][j] > '9'))
 				mb_int = 0;
 		if (mb_int == 1) /* если первая строка файла содержит лишь цифры*/

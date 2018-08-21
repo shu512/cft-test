@@ -8,33 +8,50 @@ int main(int argc, char *argv[])
 		system("pause");
 		exit(EXIT_FAILURE);
 	}
-	int increase_mode, string_mode; /* increase_mode = 1 - по возрастанию 
+	int increase_mode = -1, string_mode = -1; /* increase_mode = 1 - по возрастанию 
 									string_mode = 1 - сортировка строк */
 	char out_filename[MAX_FILENAME_LEN];
 	char **in_filename;
 	int numb_in_file; /* количество входных файлов */
 	int index_arg = 1;
-	if (strncmp(argv[index_arg], "-a", 2) == 0) {
+	if (strncmp(argv[index_arg], "-a", 3) == 0) {
 		increase_mode = 1;
-		index_arg++;
 	}
-	else if (strncmp(argv[index_arg], "-d", 2) == 0) {
+	else if (strncmp(argv[index_arg], "-d", 3) == 0) {
 		increase_mode = 0;
-		index_arg++;
 	}
 	else {
-		increase_mode = 1; /* если аргумент пропущен - сортировка по возрастанию */
-	}
-	if (strncmp(argv[index_arg], "-s", 2) == 0) 
-		string_mode = 1;
-	else if (strncmp(argv[index_arg], "-i", 2) == 0) 
-		string_mode = 0;
-	else {
-		instruct();
-		system("pause");
-		exit(EXIT_FAILURE);
+		if (strncmp(argv[index_arg], "-s", 3) == 0) {
+			increase_mode = 1; /* если аргумент пропущен - сортировка по возрастанию */
+			string_mode = 1;
+		}
+		else if (strncmp(argv[index_arg], "-i", 3) == 0) {
+			increase_mode = 1; /* если аргумент пропущен - сортировка по возрастанию */
+			string_mode = 0;
+			
+		}
+		else {
+			instruct();
+			system("pause");
+			exit(EXIT_FAILURE);
+		}
 	}
 	index_arg++;
+	if (string_mode == -1) {
+		if (strncmp(argv[index_arg], "-s", 2) == 0) {
+			string_mode = 1;
+			index_arg++;
+		}
+		else if (strncmp(argv[index_arg], "-i", 2) == 0) {
+			string_mode = 0;
+			index_arg++;
+		}
+		else {
+			instruct();
+			system("pause");
+			exit(EXIT_FAILURE);
+		}
+	}
 	strncpy(out_filename, argv[index_arg], MAX_FILENAME_LEN);
 	index_arg++;
 	numb_in_file = argc - index_arg;

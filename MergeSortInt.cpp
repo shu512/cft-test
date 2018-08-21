@@ -13,26 +13,37 @@ void MergeSortInt(char *out_filename, char **in_filename, int numb_in_file, int 
 	int out_array[MAX_LEN_OUTPUT_ARRAY];
 	int index_out_array = 0;
 	ofstream out(out_filename);
+	if (!out.is_open()) {
+		cout << "Error: output file can`t open/create. \n";
+		return;
+	}
 	ifstream *in = new ifstream[numb_in_file];
-	for (int i = 0; i < numb_in_file; i++)
+	for (int i = 0; i < numb_in_file; i++) {
 		in[i].open(in_filename[i]);
+		if (!in[i].is_open()) {
+			cout << "Error: " << in_filename[i] << " :can`t open file.\n";
+			in_array[i] = NULL;
+		}
+	}
 	for (int i = 0; i < numb_in_file; i++) {
 		flag_exit = 0;
-		while (!flag_exit) {
-			if ((mb_eof = in[i].eof()) == true) {
-				in_array[i] = NULL;
-				in[i].close();
-				break;
-			}
-			in[i] >> in_buff;
-			if (char_or_int(in_buff)) {
-				flag_exit = 1;
-				in_array[i] = atoi(in_buff);
-			}
-			else { /* וסכט ג פאיכו גלוסעמ int - char */
-				cout << "Error: " << in_filename[i] << ": \"" << in_buff
-					<< "\" skipped.\n";
-				flag_exit = 0;
+		if (in_array[i] != NULL) {
+			while (!flag_exit) {
+				if ((mb_eof = in[i].eof()) == true) {
+					in_array[i] = NULL;
+					in[i].close();
+					break;
+				}
+				in[i] >> in_buff;
+				if (char_or_int(in_buff)) {
+					flag_exit = 1;
+					in_array[i] = atoi(in_buff);
+				}
+				else { /* וסכט ג פאיכו גלוסעמ int - char */
+					cout << "Error: " << in_filename[i] << ": \"" << in_buff
+						<< "\" skipped.\n";
+					flag_exit = 0;
+				}
 			}
 		}
 	}
